@@ -47,7 +47,7 @@ Ce projet vise à développer une application mobile de reconnaissance et de cla
 ## :white_check_mark: Prérequis
 - **Flutter** : [Installation](https://flutter.dev/docs/get-started/install)
 - **Python** et **PyTorch** : [Installation de PyTorch](https://pytorch.org/get-started/locally/)
-- **Firebase** : [Installation](https://firebase.google.com/docs/flutter/setup)
+- **Firebase** : [Installation](https://firebase.google.com/docs/flutter/setup) [Choix de Firebase](https://docs.google.com/document/d/1RXeCvwl9rg1jxLRxyLL1OSE61ktS39gc4aDN_pnFVvE/edit?usp=sharing)
 
 ## :checkered_flag: Installation
 1. **Clonez le dépôt GitHub** :
