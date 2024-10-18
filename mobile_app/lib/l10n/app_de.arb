@@ -1,0 +1,117 @@
+{
+  "email": "E-Mail",
+  "@email": {
+    "description": "The label for email on reset password page"
+  },
+  "hello": "Hallo!",
+  "@hello": {
+    "description": "The label for the hello on login page"
+  },
+  "haveAccount": "ICH HABE EIN KONTO",
+  "@haveAccount": {
+    "description": "The label for the have account button on login page"
+  },
+  "getStarted": "LOS GEHT'S",
+  "@getStarted": {
+    "description": "The label for the get started button on login page"
+  },
+  "login": "Anmeldung",
+  "@login": {
+    "description": "The label for the login button"
+  },
+  "password": "Passwort",
+  "@password": {
+    "description": "The label for the password field on login page"
+  },
+  "passwordForgotten": "Passwort vergessen?",
+  "@passwordForgotten": {
+    "description": "The label for the password forgotten on sign up page"
+  },
+  "resetPassword": "Mein Passwort zurücksetzen",
+  "@resetPassword": {
+    "description": "The label for reset password on login page"
+  },
+  "resetPasswordButton": "Zurücksetzen",
+  "@resetPasswordButton": {
+    "description": "The label for button on reset password page"
+  },
+  "resetPasswordSubtitle": "Wir schicken Ihnen einen Link zu Ihrem Passwort",
+  "@resetPasswordSubtitle": {
+    "description": "The label for button on reset password page"
+  },
+  "loginOrEmail": "Login oder E-Mail",
+  "@loginOrEmail": {
+    "description": "The label for the login or email field on login page"
+  },
+  "username": "Benutzername",
+  "@username": {
+    "description": "The label for the username field on login page"
+  },
+  "signUpButton": "ANMELDEN",
+  "@signUpButton": {
+    "description": "The label for the sign up button on sign up page"
+  },
+  "signInButton": "ANMELDEN",
+  "@signInButton": {
+    "description": "The label for the sign in button on sign in page"
+  },
+  "signInGoogleButton": "Mit Google anmelden",
+  "@signInGoogleButton": {
+    "description": "The label for the sign in with Google button on sign in page"
+  },
+  "signUpWithGoogle": "Mit Google anmelden",
+  "@signUpWithGoogle": {
+    "description": "The label for the sign up with Google button on sign up page"
+  },
+  "usernameRequired": "Benutzername ist erforderlich",
+  "@usernameRequired": {
+    "description": "The label for the username required on sign up page"
+  },
+  "loginRequired": "Login ist erforderlich",
+  "@loginRequired": {
+    "description": "The label for the login required on login page"
+  },
+  "passwordRequired": "Passwort ist erforderlich",
+  "@passwordRequired": {
+    "description": "The label for the password required on login page"
+  },
+  "emailRequired": "E-Mail ist erforderlich",
+  "@emailRequired": {
+    "description": "The label for the email required on sign up page"
+  },
+  "emailInvalid": "E-Mail ist ungültig",
+  "@emailInvalid": {
+    "description": "The label for the email invalid on sign up page"
+  },
+  "passwordRequirements": "Passwort muss mindestens 8 Zeichen lang und ein Sonderzeichen enthalten",
+  "@passwordRequirements": {
+    "description": "The label for the password requirements on sign up page"
+  },
+  "signUpError": "Fehler beim Anmelden",
+  "@signUpError": {
+    "description": "The label for the sign up error on sign up page"
+  },
+  "welcomeBack": "Willkommen zurück !",
+  "@welcomeBack": {
+    "description": "The title label for the sign in page"
+  },
+  "resetPasswordEmailSent": "Passwort-Reset-Link gesendet",
+  "@resetPasswordEmailSent": {
+    "description": "The title label for the reset password email sent dialog"
+  },
+  "dialogButton": "OK",
+  "@dialogButton": {
+    "description": "The label for open email app dialog button when no email app installed",
+    "type": "text"
+  },
+  "dialogDescription": "Keine E-Mail-Apps gefunden.",
+  "@dialogDescription": {
+    "description": "The label for open email app dialog description when no email app installed",
+    "type": "text"
+  },
+  "dialogTitle": "E-Mail App öffnen",
+  "@dialogTitle": {
+    "description": "The label for open email app dialog title when no email app installed",
+    "type": "text"
+  }
+}

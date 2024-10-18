@@ -1,0 +1,117 @@
+{
+  "email": "Email",
+  "@email": {
+    "description": "The label for email on reset password page"
+  },
+  "hello": "Hello!",
+  "@hello": {
+    "description": "The label for the hello on login page"
+  },
+  "haveAccount": "I HAVE AN ACCOUNT",
+  "@haveAccount": {
+    "description": "The label for the have account button on login page"
+  },
+  "getStarted": "GET STARTED",
+  "@getStarted": {
+    "description": "The label for the get started button on login page"
+  },
+  "login": "Login",
+  "@login": {
+    "description": "The label for the login button"
+  },
+  "password": "Password",
+  "@password": {
+    "description": "The label for the password field on login page"
+  },
+  "passwordForgotten": "Forgot password?",
+  "@passwordForgotten": {
+    "description": "The label for the password forgotten on sign up page"
+  },
+  "resetPassword": "Reset my password",
+  "@resetPassword": {
+    "description": "The label for reset password on login page"
+  },
+  "resetPasswordButton": "Reset",
+  "@resetPasswordButton": {
+    "description": "The label for button on reset password page"
+  },
+  "resetPasswordSubtitle": "We will send you a link to reset your password",
+  "@resetPasswordSubtitle": {
+    "description": "The label for button on reset password page"
+  },
+  "loginOrEmail": "Login or Email",
+  "@loginOrEmail": {
+    "description": "The label for the login or email field on login page"
+  },
+  "username": "Username",
+  "@username": {
+    "description": "The label for the username field"
+  },
+  "signUpButton": "SIGN UP",
+  "@signUpButton": {
+    "description": "The label for the sign up button on sign up page"
+  },
+  "signInButton": "SIGN IN",
+  "@signInButton": {
+    "description": "The label for the sign in button on sign in page"
+  },
+  "signInGoogleButton": "Sign in with Google",
+  "@signInGoogleButton": {
+    "description": "The label for the sign in with Google button on sign in page"
+  },
+  "signUpWithGoogle": "Sign up with Google",
+  "@signUpWithGoogle": {
+    "description": "The label for the sign up with Google button on sign up page"
+  },
+  "usernameRequired": "Username is required",
+  "@usernameRequired": {
+    "description": "The label for the username required on sign up page"
+  },
+  "loginRequired": "Login is required",
+  "@loginRequired": {
+    "description": "The label for the login required on login page"
+  },
+  "passwordRequired": "Password is required",
+  "@passwordRequired": {
+    "description": "The label for the password required on login page"
+  },
+  "emailRequired": "Email is required",
+  "@emailRequired": {
+    "description": "The label for the email required on sign up page"
+  },
+  "emailInvalid": "Email is invalid",
+  "@emailInvalid": {
+    "description": "The label for the email invalid on sign up page"
+  },
+  "passwordRequirements": "Password must be at least 8 characters long and contain a special character",
+  "@passwordRequirements": {
+    "description": "The label for the password requirements on sign up page"
+  },
+  "signUpError": "Error signing up",
+  "@signUpError": {
+    "description": "The label for the sign up error on sign up page"
+  },
+  "welcomeBack": "Welcome back !",
+  "@welcomeBack": {
+    "description": "The title label for the sign in page"
+  },
+  "resetPasswordEmailSent": "Reset password email sent",
+  "@resetPasswordEmailSent": {
+    "description": "The title label for the reset password email sent dialog"
+  },
+  "dialogButton": "OK",
+  "@dialogButton": {
+    "description": "The label for open email app dialog button when no email app installed",
+    "type": "text"
+  },
+  "dialogDescription": "No mail apps found.",
+  "@dialogDescription": {
+    "description": "The label for open email app dialog description when no email app installed",
+    "type": "text"
+  },
+  "dialogTitle": "Open Mail App",
+  "@dialogTitle": {
+    "description": "The label for open email app dialog title when no email app installed",
+    "type": "text"
+  }
+}
