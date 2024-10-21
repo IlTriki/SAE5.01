@@ -40,7 +40,7 @@ Ce projet vise à développer une application mobile de reconnaissance et de cla
 ## :rocket: Technologies Utilisées
 - **Front-end** : Flutter
 - **Back-end et IA** :
-  - **Modèle IA** : YOLOv5 
+  - **Modèle IA** : YOLOv11 
   - **Framework de Deep Learning** : PyTorch
   - **Base de données et Authentification** : Firebase
 
