@@ -1,7 +1,7 @@
-import 'package:ckoitgrol/pages/auth/login_page.dart';
-import 'package:ckoitgrol/pages/auth/sign_up_page.dart';
+import 'package:ckoitgrol/routing/app_pages.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:get/get.dart';
 
 class StartingAuthPage extends StatefulWidget {
   const StartingAuthPage({super.key});
@@ -53,8 +53,7 @@ class _StartingAuthPageState extends State<StartingAuthPage> {
                           ),
                         ),
                         onPressed: () {
-                          Navigator.of(context).push(MaterialPageRoute(
-                              builder: (context) => const SignUpPage()));
+                          Get.toNamed(Routes.SIGNUP);
                         },
                         child: Text(
                           Translate.of(context).getStarted,
@@ -70,11 +69,6 @@ class _StartingAuthPageState extends State<StartingAuthPage> {
                       padding: const EdgeInsets.symmetric(horizontal: 32),
                       child: OutlinedButton(
                         style: OutlinedButton.styleFrom(
-                          backgroundColor: Theme.of(context)
-                              .outlinedButtonTheme
-                              .style!
-                              .backgroundColor!
-                              .resolve({}),
                           minimumSize: const Size.fromHeight(60),
                           side: BorderSide(
                               color: Theme.of(context)
@@ -86,18 +80,12 @@ class _StartingAuthPageState extends State<StartingAuthPage> {
                           ),
                         ),
                         onPressed: () {
-                          Navigator.of(context).push(MaterialPageRoute(
-                              builder: (context) => const LoginPage()));
+                          Get.toNamed(Routes.LOGIN);
                         },
                         child: Text(
                           Translate.of(context).haveAccount,
-                          style: TextStyle(
+                          style: const TextStyle(
                             fontSize: 16,
-                            color: Theme.of(context)
-                                .outlinedButtonTheme
-                                .style!
-                                .textStyle!
-                                .resolve({})!.color,
                           ),
                         ),
                       ),

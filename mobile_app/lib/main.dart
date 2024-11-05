@@ -1,11 +1,10 @@
 import 'package:ckoitgrol/firebase_options.dart';
-import 'package:ckoitgrol/pages/auth/starting_auth_page.dart';
+import 'package:ckoitgrol/routing/app_pages.dart';
 import 'package:flutter/material.dart';
-import 'package:ckoitgrol/pages/main_layout_page.dart';
-import 'package:ckoitgrol/route/auth_guard.dart';
 import 'package:ckoitgrol/theme/theme.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:get/get.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -20,19 +19,17 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return GetMaterialApp(
+      title: 'CKOITGROL',
       theme: lightTheme,
       darkTheme: darkTheme,
       themeMode: ThemeMode.system,
-      home: Builder(
-        builder: (BuildContext context) {
-          return checkIfLoggedIn()
-              ? const MainLayoutPage()
-              : const StartingAuthPage();
-        },
-      ),
+      initialRoute: AppPages.INITIAL,
+      getPages: AppPages.routes,
       localizationsDelegates: Translate.localizationsDelegates,
       supportedLocales: Translate.supportedLocales,
+      locale: Get.deviceLocale,
+      fallbackLocale: const Locale('en', 'US'),
     );
   }
 }

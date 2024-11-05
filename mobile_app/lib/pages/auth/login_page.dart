@@ -1,65 +1,20 @@
-import 'package:ckoitgrol/pages/auth/forgot_password_page.dart';
-import 'package:ckoitgrol/services/auth/auth_service.dart';
+import 'package:ckoitgrol/routing/app_pages.dart';
+import 'package:ckoitgrol/utils/buttons/text_arrow_button.dart';
+import 'package:ckoitgrol/utils/forms/text_field.dart';
+import 'package:ckoitgrol/utils/text/string_extension.dart';
 import 'package:flutter/material.dart';
-import 'package:ckoitgrol/pages/main_layout_page.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:get/get.dart';
+import 'package:ckoitgrol/controllers/auth_controller.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:flutter_svg/svg.dart';
 
-class LoginPage extends StatefulWidget {
+class LoginPage extends GetView<AuthController> {
   const LoginPage({super.key});
-
-  @override
-  State<LoginPage> createState() => _LoginPageState();
-}
-
-class _LoginPageState extends State<LoginPage> {
-  final TextEditingController _emailOrUsernameController =
-      TextEditingController();
-  final TextEditingController _passwordController = TextEditingController();
-  bool _isPasswordVisible = false;
-  final AuthService _authService = AuthService();
-
-  @override
-  void dispose() {
-    _emailOrUsernameController.dispose();
-    _passwordController.dispose();
-    super.dispose();
-  }
-
-  void loginWithEmailOrUsername(BuildContext context) async {
-    try {
-      await _authService.signInWithEmailOrUsername(
-        _emailOrUsernameController.text.trim(),
-        _passwordController.text.trim(),
-      );
-      Navigator.of(context).pushReplacement(
-          MaterialPageRoute(builder: (context) => const MainLayoutPage()));
-    } catch (e) {
-      final errorMessage = _authService.getErrorMessage(e.toString());
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(errorMessage)),
-      );
-    }
-  }
-
-  void loginWithGoogle(BuildContext context) async {
-    try {
-      await _authService.singInWithGoogle();
-      Navigator.of(context).pushReplacement(
-          MaterialPageRoute(builder: (context) => const MainLayoutPage()));
-    } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("An error occurred. Please try again.")),
-      );
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-      ),
+      appBar: AppBar(),
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 32),
@@ -87,93 +42,48 @@ class _LoginPageState extends State<LoginPage> {
                     height: 40,
                   ),
                   // Username or Email field
-                  TextField(
-                    controller: _emailOrUsernameController,
-                    style: TextStyle(
-                        color: Theme.of(context).secondaryHeaderColor),
-                    decoration: InputDecoration(
-                      hintText: Translate.of(context).loginOrEmail,
-                      hintStyle:
-                          TextStyle(color: Theme.of(context).canvasColor),
-                      filled: true,
-                      fillColor: Theme.of(context).colorScheme.tertiary,
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(12),
-                        borderSide: BorderSide.none,
-                      ),
-                    ),
+                  CustomAuthTextField(
+                    controller: controller.emailController,
+                    hintText: Translate.of(context).loginOrEmail,
                   ),
                   const SizedBox(height: 16),
-                  // Password field with visibility icon
-                  TextField(
-                    controller: _passwordController,
-                    obscureText: !_isPasswordVisible,
-                    style: TextStyle(
-                        color: Theme.of(context).secondaryHeaderColor),
-                    decoration: InputDecoration(
-                      hintText: Translate.of(context).password,
-                      hintStyle:
-                          TextStyle(color: Theme.of(context).canvasColor),
-                      filled: true,
-                      fillColor: Theme.of(context).colorScheme.tertiary,
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(12),
-                        borderSide: BorderSide.none,
-                      ),
-                      suffixIcon: IconButton(
-                        icon: Icon(
-                            _isPasswordVisible
-                                ? Icons.visibility
-                                : Icons.visibility_off,
-                            color: Theme.of(context).canvasColor),
-                        onPressed: () {
-                          setState(() {
-                            _isPasswordVisible = !_isPasswordVisible;
-                          });
-                        },
-                      ),
-                    ),
-                  ),
+                  Obx(() => CustomAuthTextField(
+                        icon: Icons.visibility_off,
+                        controller: controller.passwordController,
+                        hintText: Translate.of(context).password,
+                        obscureText: controller.isPasswordHidden.value,
+                        onPressedIcon: Icons.visibility,
+                        onPressedIconFunction:
+                            controller.togglePasswordVisibility,
+                      )),
                   const SizedBox(height: 8),
+                  Obx(() => controller.signInError.value != null
+                      ? Align(
+                          alignment: Alignment.centerLeft,
+                          child: Text(
+                            controller.signInError.value!,
+                            style: const TextStyle(
+                                color: Colors.red, fontSize: 14),
+                          ),
+                        )
+                      : Container()),
                   // Forgot Password
                   Align(
                     alignment: Alignment.centerRight,
                     child: TextButton(
                       onPressed: () {
-                        Navigator.of(context).push(MaterialPageRoute(
-                            builder: (context) =>
-                                const ForgottenPasswordPage()));
+                        Get.toNamed(Routes.FORGOT_PASSWORD);
                       },
                       child: Text(
                         Translate.of(context).passwordForgotten,
-                        style: TextStyle(color: Theme.of(context).canvasColor),
                       ),
                     ),
                   ),
                   const SizedBox(height: 20),
                   // Sign In button
-                  SizedBox(
-                    width: double.infinity,
-                    child: ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Theme.of(context).colorScheme.primary,
-                        minimumSize: const Size.fromHeight(60),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                      ),
-                      onPressed: () {
-                        loginWithEmailOrUsername(context);
-                      },
-                      child: Text(
-                        Translate.of(context).signInButton,
-                        style: TextStyle(
-                          color: Theme.of(context).primaryColor,
-                          fontSize: 16,
-                        ),
-                      ),
-                    ),
-                  ),
+                  TextArrowButton(
+                      text: Translate.of(context).signInButton.toCapitalized(),
+                      onPressed: controller.signIn)
                 ],
               ),
               // Google Sign In button
@@ -188,24 +98,19 @@ class _LoginPageState extends State<LoginPage> {
                         height: 24,
                       ),
                       style: OutlinedButton.styleFrom(
-                        side: BorderSide(color: Theme.of(context).canvasColor),
+                        side: const BorderSide(),
                         minimumSize: const Size.fromHeight(60),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(12),
                         ),
                       ),
                       onPressed: () {
-                        loginWithGoogle(context);
+                        controller.signInWithGoogle();
                       },
                       label: Text(
                         Translate.of(context).signInGoogleButton,
-                        style: TextStyle(
+                        style: const TextStyle(
                           fontSize: 16,
-                          color: Theme.of(context)
-                              .outlinedButtonTheme
-                              .style!
-                              .textStyle!
-                              .resolve({})!.color,
                         ),
                       ),
                     ),

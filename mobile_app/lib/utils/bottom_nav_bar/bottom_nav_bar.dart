@@ -26,8 +26,6 @@ class _BottomNavBarState extends State<BottomNavBar> {
     ];
     return BottomAppBar(
       notchMargin: 8.0,
-      color: Theme.of(context).bottomAppBarTheme.color,
-      shadowColor: Theme.of(context).bottomAppBarTheme.shadowColor,
       elevation: 0.8,
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16.0),

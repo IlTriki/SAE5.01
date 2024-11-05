@@ -1,6 +1,7 @@
-import 'package:ckoitgrol/pages/auth/starting_auth_page.dart';
+import 'package:ckoitgrol/routing/app_pages.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:get/get.dart';
 
 class ProfilePage extends StatelessWidget {
   const ProfilePage({super.key});
@@ -119,9 +120,6 @@ class ProfilePage extends StatelessWidget {
 
   void signOut(BuildContext context) async {
     await FirebaseAuth.instance.signOut();
-    Navigator.of(context).pushAndRemoveUntil(
-      MaterialPageRoute(builder: (context) => const StartingAuthPage()),
-      (Route<dynamic> route) => false,
-    );
+    Get.offAllNamed(Routes.STARTING_AUTH);
   }
 }

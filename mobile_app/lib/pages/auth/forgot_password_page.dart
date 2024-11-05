@@ -2,6 +2,7 @@ import 'package:ckoitgrol/utils/links/links.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:get/get.dart';
 
 class ForgottenPasswordPage extends StatefulWidget {
   const ForgottenPasswordPage({super.key});
@@ -61,7 +62,7 @@ class _ForgottenPasswordPageState extends State<ForgottenPasswordPage> {
                   shape: null,
                 ),
                 onPressed: () {
-                  Navigator.pop(context);
+                  Get.back();
                   openEmailApp(context);
                 },
                 child: Text(Translate.of(context).dialogTitle),

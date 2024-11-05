@@ -1,13 +1,13 @@
-import 'package:ckoitgrol/pages/auth/login_page.dart';
+import 'package:ckoitgrol/routing/app_pages.dart';
 import 'package:ckoitgrol/utils/text/string_extension.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:get/get.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
-import 'package:ckoitgrol/pages/main_layout_page.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
@@ -46,9 +46,7 @@ class _SignUpPageState extends State<SignUpPage> {
           profilePicUrl,
         );
 
-        Navigator.of(context).pushReplacement(
-          MaterialPageRoute(builder: (context) => const MainLayoutPage()),
-        );
+        Get.offAndToNamed(Routes.MAIN);
       } on FirebaseAuthException catch (e) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
@@ -78,9 +76,7 @@ class _SignUpPageState extends State<SignUpPage> {
         userCredential.user!.photoURL,
       );
 
-      Navigator.of(context).pushReplacement(
-        MaterialPageRoute(builder: (context) => const LoginPage()),
-      );
+      Get.offAndToNamed(Routes.LOGIN);
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text(Translate.of(context).signUpError)),

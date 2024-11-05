@@ -41,8 +41,6 @@ class _MainLayoutPageState extends State<MainLayoutPage> {
       floatingActionButton: FloatingActionButton(
         onPressed: () {},
         shape: const CircleBorder(),
-        backgroundColor:
-            Theme.of(context).floatingActionButtonTheme.backgroundColor,
         child: Icon(Icons.add, color: Theme.of(context).primaryColor),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,

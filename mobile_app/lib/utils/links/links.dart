@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:open_mail_app/open_mail_app.dart';
 import 'package:url_launcher/url_launcher_string.dart';
+import 'package:get/get.dart';
 
 Future<void> openLink(String url) async {
   if (!await launchUrlString(url)) {
@@ -44,7 +45,7 @@ void showNoMailAppsDialog(BuildContext context) {
           FilledButton(
             child: Text(Translate.of(context).dialogButton),
             onPressed: () {
-              Navigator.pop(context);
+              Get.back();
             },
           )
         ],
