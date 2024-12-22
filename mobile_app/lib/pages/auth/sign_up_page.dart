@@ -1,4 +1,5 @@
 import 'package:ckoitgrol/routing/app_pages.dart';
+import 'package:ckoitgrol/utils/buttons/google_button.dart';
 import 'package:ckoitgrol/utils/text/string_extension.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -9,7 +10,6 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 
 class SignUpPage extends StatefulWidget {
   const SignUpPage({super.key});
@@ -244,37 +244,9 @@ class _SignUpPageState extends State<SignUpPage> {
                     ),
                   ),
                   const SizedBox(height: 16),
-                  SizedBox(
-                    width: double.infinity,
-                    child: OutlinedButton.icon(
-                      icon: SvgPicture.asset(
-                        'assets/images/google.svg',
-                        width: 24,
-                        height: 24,
-                      ),
-                      style: OutlinedButton.styleFrom(
-                        side: BorderSide(color: Theme.of(context).canvasColor),
-                        minimumSize: const Size.fromHeight(60),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                      ),
-                      onPressed: () {
-                        _signUpWithGoogle();
-                      },
-                      label: Text(
-                        Translate.of(context).signUpWithGoogle,
-                        style: TextStyle(
-                          fontSize: 16,
-                          color: Theme.of(context)
-                              .outlinedButtonTheme
-                              .style!
-                              .textStyle!
-                              .resolve({})!.color,
-                        ),
-                      ),
-                    ),
-                  ),
+                  GoogleButton(
+                      text: Translate.of(context).signUpWithGoogle,
+                      onPressed: _signUpWithGoogle),
                 ],
               ),
             ),
