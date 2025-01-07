@@ -17,10 +17,7 @@ import 'package:flutter/foundation.dart'
 class DefaultFirebaseOptions {
   static FirebaseOptions get currentPlatform {
     if (kIsWeb) {
-      throw UnsupportedError(
-        'DefaultFirebaseOptions have not been configured for web - '
-        'you can reconfigure this by running the FlutterFire CLI again.',
-      );
+      return web;
     }
     switch (defaultTargetPlatform) {
       case TargetPlatform.android:
@@ -33,10 +30,7 @@ class DefaultFirebaseOptions {
           'you can reconfigure this by running the FlutterFire CLI again.',
         );
       case TargetPlatform.windows:
-        throw UnsupportedError(
-          'DefaultFirebaseOptions have not been configured for windows - '
-          'you can reconfigure this by running the FlutterFire CLI again.',
-        );
+        return windows;
       case TargetPlatform.linux:
         throw UnsupportedError(
           'DefaultFirebaseOptions have not been configured for linux - '
@@ -61,16 +55,40 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions ios = FirebaseOptions(
     apiKey: 'AIzaSyAQRZaK4ubN1GC_2L4KWutY90z82JS7F5s',
-    appId: '1:935761986596:ios:75506d85dcc7f4729184b1',
+    appId: '1:935761986596:ios:58cb2cf5baebf09a9184b1',
     messagingSenderId: '935761986596',
     projectId: 'sae-5-groupegoat',
     databaseURL:
         'https://sae-5-groupegoat-default-rtdb.europe-west1.firebasedatabase.app',
     storageBucket: 'sae-5-groupegoat.appspot.com',
     androidClientId:
-        '935761986596-uep1ve2mqucsrtg6um19igj6uubpevc5.apps.googleusercontent.com',
+        '935761986596-ghhjbrhv1av3nnttf3cvm97snojgok20.apps.googleusercontent.com',
     iosClientId:
-        '935761986596-j0r27db44987kku86m3ool002n74s6tk.apps.googleusercontent.com',
+        '935761986596-eihqhhpjn2jhide7ocgv1vjfe54ufap7.apps.googleusercontent.com',
     iosBundleId: 'com.ckoitgrol.app',
+  );
+
+  static const FirebaseOptions web = FirebaseOptions(
+    apiKey: 'AIzaSyBRJSaXU5HK9eWA4nv3fj6shaJIYaos2RE',
+    appId: '1:935761986596:web:7bc5911f21ecb8c99184b1',
+    messagingSenderId: '935761986596',
+    projectId: 'sae-5-groupegoat',
+    authDomain: 'sae-5-groupegoat.firebaseapp.com',
+    databaseURL:
+        'https://sae-5-groupegoat-default-rtdb.europe-west1.firebasedatabase.app',
+    storageBucket: 'sae-5-groupegoat.appspot.com',
+    measurementId: 'G-9GXVSF4MW4',
+  );
+
+  static const FirebaseOptions windows = FirebaseOptions(
+    apiKey: 'AIzaSyBRJSaXU5HK9eWA4nv3fj6shaJIYaos2RE',
+    appId: '1:935761986596:web:837ca5b661a44e4c9184b1',
+    messagingSenderId: '935761986596',
+    projectId: 'sae-5-groupegoat',
+    authDomain: 'sae-5-groupegoat.firebaseapp.com',
+    databaseURL:
+        'https://sae-5-groupegoat-default-rtdb.europe-west1.firebasedatabase.app',
+    storageBucket: 'sae-5-groupegoat.appspot.com',
+    measurementId: 'G-EXCWXN72ET',
   );
 }

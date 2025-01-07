@@ -15,6 +15,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "935761986596-ghhjbrhv1av3nnttf3cvm97snojgok20.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.ckoitgrol.app",
+            "certificate_hash": "d1df2ff88108d25769122dbc580622ab7ebabd4d"
+          }
+        },
+        {
           "client_id": "935761986596-0ar861lv8s6i41i6e7lr1t6q87tufq9q.apps.googleusercontent.com",
           "client_type": 3
         }
