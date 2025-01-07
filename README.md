@@ -57,8 +57,10 @@ Ce projet vise à développer une application mobile de reconnaissance et de cla
    ```
 2. **Installez les dépendances Flutter** :
    ```bash
-   cd mobile_app
+   cd ckoitgrol
    flutter pub get
+   dart run build_runner build
+   flutter gen-l10n
    ```
   Ne oubliez pas de configurer Firebase pour votre projet en suivant les instructions dans la documentation Firebase.
 
