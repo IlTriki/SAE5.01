@@ -98,10 +98,10 @@ packages:
     dependency: transitive
     description:
       name: build
-      sha256: cef23f1eda9b57566c81e2133d196f8e3df48f244b317368d65c5943d91148f0
+      sha256: "80184af8b6cb3e5c1c4ec6d8544d27711700bc3e6d2efad04238c7b5290889f0"
       url: "https://pub.dev"
     source: hosted
-    version: "2.4.2"
+    version: "2.4.1"
   build_config:
     dependency: transitive
     description:
@@ -138,10 +138,10 @@ packages:
     dependency: transitive
     description:
       name: build_runner_core
-      sha256: f8126682b87a7282a339b871298cc12009cb67109cfa1614d6436fb0289193e0
+      sha256: "6d6ee4276b1c5f34f21fdf39425202712d2be82019983d52f351c94aafbc2c41"
       url: "https://pub.dev"
     source: hosted
-    version: "7.3.2"
+    version: "7.2.10"
   built_collection:
     dependency: transitive
     description:
@@ -294,6 +294,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.0.0"
+  computer:
+    dependency: transitive
+    description:
+      name: computer
+      sha256: "34176c612a02ebf3e5eaa3e9b40e2b1df495043c46614999639d19e66823232d"
+      url: "https://pub.dev"
+    source: hosted
+    version: "3.2.1"
   connectivity_plus:
     dependency: "direct main"
     description:
@@ -1034,14 +1042,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.4.0"
-  quiver:
-    dependency: transitive
+  pytorch_lite:
+    dependency: "direct main"
     description:
-      name: quiver
-      sha256: ea0b925899e64ecdfbf9c7becb60d5b50e706ade44a85b2363be2a22d88117d2
+      name: pytorch_lite
+      sha256: "4593ca9b0a8087d362409b10bffa3c7c57df73bd8af848196c2bda56f2dc3755"
       url: "https://pub.dev"
     source: hosted
-    version: "3.2.2"
+    version: "4.3.1+1"
   reflectable:
     dependency: transitive
     description:
@@ -1279,22 +1287,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.7.3"
-  tflite_flutter:
-    dependency: "direct main"
-    description:
-      name: tflite_flutter
-      sha256: "48e6fde2ad97162bb66a16a142f4c4698add9e8cd397ce9d1cc7451b55537ac1"
-      url: "https://pub.dev"
-    source: hosted
-    version: "0.11.0"
-  tflite_v2:
-    dependency: "direct main"
-    description:
-      name: tflite_v2
-      sha256: cedfa87aea6d0feb009a3d6f56ef7f2076617a916d3b002ff867c00aa3c69125
-      url: "https://pub.dev"
-    source: hosted
-    version: "1.0.0"
   timing:
     dependency: transitive
     description:

@@ -1,0 +1,13 @@
+train: /Users/nicos/Desktop/trash/SAE5.01/SAE5.01/ckoitgrol/prod/dataset/train/images
+val: /Users/nicos/Desktop/trash/SAE5.01/SAE5.01/ckoitgrol/prod/dataset/valid/images
+test: /Users/nicos/Desktop/trash/SAE5.01/SAE5.01/ckoitgrol/prod/dataset/test/images
+
+nc: 2
+names: ['shoes', 'sneaker']
+
+roboflow:
+  workspace: shoes-f7abe
+  project: shoes-ntjz4
+  version: 11
+  license: CC BY 4.0
+  url: https://universe.roboflow.com/shoes-f7abe/shoes-ntjz4/dataset/11

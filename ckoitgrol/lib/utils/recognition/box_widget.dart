@@ -1,41 +1,67 @@
 import 'package:flutter/material.dart';
-import 'recognition.dart';
+import 'package:pytorch_lite/pigeon.dart';
+import 'package:pytorch_lite/pytorch_lite.dart';
+import 'package:ckoitgrol/utils/recognition/camera_view_singleton.dart';
 
 /// Individual bounding box
 class BoxWidget extends StatelessWidget {
-  final Recognition result;
-
-  const BoxWidget({super.key, required this.result});
-
+  final ResultObjectDetection result;
+  final Color? boxesColor;
+  final bool showPercentage;
+  const BoxWidget(
+      {super.key,
+      required this.result,
+      this.boxesColor,
+      this.showPercentage = true});
   @override
   Widget build(BuildContext context) {
     // Color for bounding box
-    Color color = Colors.primaries[
-        (result.label.length + result.label.codeUnitAt(0) + result.id) %
-            Colors.primaries.length];
+    //print(MediaQuery.of(context).size);
+    Color? usedColor;
+    //Size screenSize = CameraViewSingleton.inputImageSize;
+    Size screenSize = CameraViewSingleton.actualPreviewSizeH;
+    //Size screenSize = MediaQuery.of(context).size;
 
-    print('Drawing box at: ${result.renderLocation}');
+    //print(screenSize);
+    double factorX = screenSize.width;
+    double factorY = screenSize.height;
+    if (boxesColor == null) {
+      //change colors for each label
+      usedColor = Colors.primaries[
+          ((result.className ?? result.classIndex.toString()).length +
+                  (result.className ?? result.classIndex.toString())
+                      .codeUnitAt(0) +
+                  result.classIndex) %
+              Colors.primaries.length];
+    } else {
+      usedColor = boxesColor;
+    }
 
     return Positioned(
-      left: result.renderLocation.left,
-      top: result.renderLocation.top,
-      width: 40,
-      height: 40,
+      left: result.rect.left * factorX,
+      top: result.rect.top * factorY,
+      width: result.rect.width * factorX - 20,
+      height: result.rect.height * factorY - 20,
+
+      //left: re?.rect.left.toDouble(),
+      //top: re?.rect.top.toDouble(),
+      //right: re.rect.right.toDouble(),
+      //bottom: re.rect.bottom.toDouble(),
       child: Container(
-        width: 40,
-        height: 40,
+        width: result.rect.width * factorX,
+        height: result.rect.height * factorY,
         decoration: BoxDecoration(
-            border: Border.all(color: color, width: 3),
+            border: Border.all(color: usedColor!, width: 3),
             borderRadius: const BorderRadius.all(Radius.circular(2))),
         child: Align(
           alignment: Alignment.topLeft,
           child: FittedBox(
             child: Container(
-              color: color,
+              color: usedColor,
               child: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: <Widget>[
-                  Text(result.label),
+                  Text(result.className ?? result.classIndex.toString()),
                   Text(" ${result.score.toStringAsFixed(2)}"),
                 ],
               ),
