@@ -8,7 +8,7 @@
     <application
         android:label="ckoitgrol"
         android:name="${applicationName}"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@mipmap/launcher_icon"
         android:debuggable="true"
         tools:ignore="HardcodedDebugMode">
         <activity
