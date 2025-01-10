@@ -9,6 +9,7 @@ class UserPostEntity {
   final String imageUrl;
   final double grolPercentage;
   final DateTime timestamp;
+  final List<String> likes;
 
   UserPostEntity({
     required this.id,
@@ -19,11 +20,13 @@ class UserPostEntity {
     required this.imageUrl,
     required this.grolPercentage,
     required this.timestamp,
+    this.likes = const [],
   });
 
   UserPostEntity copyWith({
     String? imageUrl,
     double? grolPercentage,
+    List<String>? likes,
   }) {
     return UserPostEntity(
       id: id,
@@ -34,6 +37,7 @@ class UserPostEntity {
       imageUrl: imageUrl ?? this.imageUrl,
       grolPercentage: grolPercentage ?? this.grolPercentage,
       timestamp: timestamp,
+      likes: likes ?? this.likes,
     );
   }
 
@@ -47,6 +51,7 @@ class UserPostEntity {
       imageUrl: json['imageUrl'] as String,
       grolPercentage: json['grolPercentage'] as double,
       timestamp: (json['timestamp'] as Timestamp).toDate(),
+      likes: List<String>.from(json['likes'] ?? []),
     );
   }
 
@@ -60,6 +65,7 @@ class UserPostEntity {
       'imageUrl': imageUrl,
       'grolPercentage': grolPercentage,
       'timestamp': Timestamp.fromDate(timestamp),
+      'likes': likes,
     };
   }
 }

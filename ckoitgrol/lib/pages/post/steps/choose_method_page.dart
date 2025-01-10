@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:ckoitgrol/services/post/create_post_service.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 @RoutePage()
 class ChooseMethodPage extends StatefulWidget {
@@ -39,7 +40,7 @@ class _ChooseMethodPageState extends State<ChooseMethodPage> {
           Column(
             children: [
               Text(
-                'Let\'s create a grolesque post!',
+                Translate.of(context).create,
                 style: TextStyle(
                     fontSize: Theme.of(context).textTheme.titleLarge?.fontSize,
                     fontWeight: FontWeight.bold,
@@ -47,7 +48,7 @@ class _ChooseMethodPageState extends State<ChooseMethodPage> {
                 textAlign: TextAlign.start,
               ),
               Text(
-                'First, choose how you would like to upload your image',
+                Translate.of(context).uploadImage,
                 style: TextStyle(
                     fontSize: Theme.of(context).textTheme.titleMedium?.fontSize,
                     color: Theme.of(context).colorScheme.secondary),
