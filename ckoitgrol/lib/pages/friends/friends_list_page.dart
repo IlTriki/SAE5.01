@@ -64,9 +64,9 @@ class _FriendsListPageState extends State<FriendsListPage>
       },
       child: CustomScrollView(
         slivers: [
-          SliverPadding(
-            padding: const EdgeInsets.all(16.0),
-            sliver: SliverToBoxAdapter(
+          SliverToBoxAdapter(
+            child: Padding(
+              padding: const EdgeInsets.all(16.0),
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
@@ -83,30 +83,26 @@ class _FriendsListPageState extends State<FriendsListPage>
                   ),
                   const SizedBox(height: 20),
                   if (_searchResults != null && _searchResults!.isNotEmpty)
-                    Flexible(
-                      child: ListView(
-                        shrinkWrap: true,
-                        physics: const NeverScrollableScrollPhysics(),
-                        children: _searchResults
-                                ?.map((user) => Friend(
-                                      user: user,
-                                      isFollowing: userDataProvider.following
-                                              ?.contains(user) ??
-                                          false,
-                                      onFollowToggle: () {
-                                        if (userDataProvider.following
-                                                ?.contains(user) ??
-                                            false) {
-                                          userDataProvider
-                                              .unfollowUser(user.uid);
-                                        } else {
-                                          userDataProvider.followUser(user.uid);
-                                        }
-                                      },
-                                    ))
-                                .toList() ??
-                            [],
-                      ),
+                    ListView(
+                      shrinkWrap: true,
+                      physics: const NeverScrollableScrollPhysics(),
+                      children: _searchResults!
+                          .map((user) => Friend(
+                                user: user,
+                                isFollowing: userDataProvider.following
+                                        ?.contains(user) ??
+                                    false,
+                                onFollowToggle: () {
+                                  if (userDataProvider.following
+                                          ?.contains(user) ??
+                                      false) {
+                                    userDataProvider.unfollowUser(user.uid);
+                                  } else {
+                                    userDataProvider.followUser(user.uid);
+                                  }
+                                },
+                              ))
+                          .toList(),
                     ),
                   TabBar(
                     controller: _tabController,
@@ -116,21 +112,19 @@ class _FriendsListPageState extends State<FriendsListPage>
                       Tab(text: Translate.of(context).following),
                     ],
                   ),
-                  Flexible(
-                    child: SizedBox(
-                      height: MediaQuery.of(context).size.height * 0.5,
-                      child: TabBarView(
-                        controller: _tabController,
-                        children: [
-                          _buildUserList(followers, userDataProvider, context),
-                          _buildUserList(following, userDataProvider, context,
-                              isFollowing: true),
-                        ],
-                      ),
-                    ),
-                  ),
                 ],
               ),
+            ),
+          ),
+          SliverFillRemaining(
+            hasScrollBody: true,
+            child: TabBarView(
+              controller: _tabController,
+              children: [
+                _buildUserList(followers, userDataProvider, context),
+                _buildUserList(following, userDataProvider, context,
+                    isFollowing: true),
+              ],
             ),
           ),
         ],

@@ -119,18 +119,29 @@ class RunModelByImageCameraState extends State<RunModelByImageCamera> {
     if (objectDetectionResults != null &&
         objectDetectionResults!.isNotEmpty &&
         _image != null) {
-      // take the fused image and save it to the create post service
-      bytes = await controller.capture();
-      if (bytes == null) {
-        return;
+      try {
+        // Capture the final view with boxes
+        bytes = await controller.capture();
+        if (bytes == null) return;
+
+        // Create a temporary file and write the bytes to it
+        final tempDir = await Directory.systemTemp.create();
+        final tempFile = File('${tempDir.path}/temp_image.png');
+        await tempFile.writeAsBytes(bytes!);
+
+        // Calculate highest score
+        double highestScore = objectDetectionResults!
+            .reduce((a, b) => a.score > b.score ? a : b)
+            .score;
+
+        // Update the CreatePostService
+        context.read<CreatePostService>().imageFile = tempFile;
+        context.read<CreatePostService>().grolPercentage = highestScore;
+        context.router.push(const SetPostDetailsRoute());
+      } catch (e) {
+        print("Error during image validation: $e");
+        // Optionally show error message to user
       }
-      // calculate highest score
-      double highestScore = objectDetectionResults!
-          .reduce((a, b) => a.score > b.score ? a : b)
-          .score;
-      context.read<CreatePostService>().imageFile = File.fromRawPath(bytes!);
-      context.read<CreatePostService>().grolPercentage = highestScore;
-      context.router.push(const SetPostDetailsRoute());
     }
   }
 

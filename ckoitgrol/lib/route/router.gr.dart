@@ -48,6 +48,96 @@ class AuthRouter extends PageRouteInfo<void> {
 }
 
 /// generated route for
+/// [ChatPage]
+class ChatRoute extends PageRouteInfo<ChatRouteArgs> {
+  ChatRoute({
+    Key? key,
+    required UserEntity chatUser,
+    required String currentUserId,
+    List<PageRouteInfo>? children,
+  }) : super(
+          ChatRoute.name,
+          args: ChatRouteArgs(
+            key: key,
+            chatUser: chatUser,
+            currentUserId: currentUserId,
+          ),
+          initialChildren: children,
+        );
+
+  static const String name = 'ChatRoute';
+
+  static PageInfo page = PageInfo(
+    name,
+    builder: (data) {
+      final args = data.argsAs<ChatRouteArgs>();
+      return ChatPage(
+        key: args.key,
+        chatUser: args.chatUser,
+        currentUserId: args.currentUserId,
+      );
+    },
+  );
+}
+
+class ChatRouteArgs {
+  const ChatRouteArgs({
+    this.key,
+    required this.chatUser,
+    required this.currentUserId,
+  });
+
+  final Key? key;
+
+  final UserEntity chatUser;
+
+  final String currentUserId;
+
+  @override
+  String toString() {
+    return 'ChatRouteArgs{key: $key, chatUser: $chatUser, currentUserId: $currentUserId}';
+  }
+}
+
+/// generated route for
+/// [ChatRouterPage]
+class ChatRouter extends PageRouteInfo<void> {
+  const ChatRouter({List<PageRouteInfo>? children})
+      : super(
+          ChatRouter.name,
+          initialChildren: children,
+        );
+
+  static const String name = 'ChatRouter';
+
+  static PageInfo page = PageInfo(
+    name,
+    builder: (data) {
+      return const ChatRouterPage();
+    },
+  );
+}
+
+/// generated route for
+/// [ChooseMethodPage]
+class ChooseMethodRoute extends PageRouteInfo<void> {
+  const ChooseMethodRoute({List<PageRouteInfo>? children})
+      : super(
+          ChooseMethodRoute.name,
+          initialChildren: children,
+        );
+
+  static const String name = 'ChooseMethodRoute';
+
+  static PageInfo page = PageInfo(
+    name,
+    builder: (data) {
+      return const ChooseMethodPage();
+    },
+  );
+}
+
+/// generated route for
 /// [CreatePostPage]
 class CreatePostRoute extends PageRouteInfo<void> {
   const CreatePostRoute({List<PageRouteInfo>? children})
@@ -200,6 +290,25 @@ class MainLayoutRoute extends PageRouteInfo<void> {
 }
 
 /// generated route for
+/// [PostImageMethodPage]
+class PostImageMethodRoute extends PageRouteInfo<void> {
+  const PostImageMethodRoute({List<PageRouteInfo>? children})
+      : super(
+          PostImageMethodRoute.name,
+          initialChildren: children,
+        );
+
+  static const String name = 'PostImageMethodRoute';
+
+  static PageInfo page = PageInfo(
+    name,
+    builder: (data) {
+      return const PostImageMethodPage();
+    },
+  );
+}
+
+/// generated route for
 /// [ProfilePage]
 class ProfileRoute extends PageRouteInfo<void> {
   const ProfileRoute({List<PageRouteInfo>? children})
@@ -233,6 +342,25 @@ class ProfileRouter extends PageRouteInfo<void> {
     name,
     builder: (data) {
       return const ProfileRouterPage();
+    },
+  );
+}
+
+/// generated route for
+/// [SetPostDetailsPage]
+class SetPostDetailsRoute extends PageRouteInfo<void> {
+  const SetPostDetailsRoute({List<PageRouteInfo>? children})
+      : super(
+          SetPostDetailsRoute.name,
+          initialChildren: children,
+        );
+
+  static const String name = 'SetPostDetailsRoute';
+
+  static PageInfo page = PageInfo(
+    name,
+    builder: (data) {
+      return const SetPostDetailsPage();
     },
   );
 }
