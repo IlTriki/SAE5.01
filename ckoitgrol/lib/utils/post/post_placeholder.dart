@@ -69,7 +69,7 @@ class PostPlaceholder extends StatelessWidget {
           ),
           // Image placeholder
           Container(
-            height: 200,
+            height: 400,
             width: double.infinity,
             color: Theme.of(context).colorScheme.surfaceContainerHighest,
           ),

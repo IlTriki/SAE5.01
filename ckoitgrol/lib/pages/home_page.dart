@@ -1,3 +1,4 @@
+import 'package:ckoitgrol/provider/user_data_provider.dart';
 import 'package:ckoitgrol/services/firebase/fireauth_service.dart';
 import 'package:flutter/material.dart';
 import 'package:auto_route/auto_route.dart';
@@ -21,7 +22,14 @@ class _HomePageState extends State<HomePage> {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _loadPosts();
+      context.read<UserDataProvider>().initializeUserData(
+          context.read<AuthService>().currentUser?.uid ?? '');
     });
+  }
+
+  Future<void> _refreshFeed() async {
+    context.read<PostsProvider>().clearProfilePictureCache();
+    await _loadPosts();
   }
 
   Future<void> _loadPosts() async {
@@ -34,9 +42,18 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return RefreshIndicator(
-      onRefresh: _loadPosts,
+      onRefresh: _refreshFeed,
       child: CustomScrollView(
         slivers: [
+          SliverAppBar(
+            title: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Text(Translate.of(context).yourFeed,
+                  style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                        color: Theme.of(context).colorScheme.primary,
+                      )),
+            ),
+          ),
           Consumer<PostsProvider>(
             builder: (context, postsProvider, child) {
               if (postsProvider.isLoadingFeedPosts) {
@@ -102,13 +119,26 @@ class _HomePageState extends State<HomePage> {
                 delegate: SliverChildBuilderDelegate(
                   (context, index) {
                     final post = postsProvider.feedPosts[index];
-                    return UserPost(
-                      title: post.text,
-                      description: post.text,
-                      image: post.imageUrl,
-                      grolPercentage: post.grolPercentage,
-                      date: post.timestamp.toString(),
-                      author: post.username,
+                    return FutureBuilder<String>(
+                      future: context
+                          .read<PostsProvider>()
+                          .getPostAuthorProfilePicture(post.userId),
+                      builder: (context, snapshot) {
+                        return UserPost(
+                          id: post.id,
+                          title: post.title,
+                          description: post.text,
+                          image: post.imageUrl,
+                          grolPercentage: post.grolPercentage,
+                          date: post.timestamp.toString(),
+                          author: post.username,
+                          authorProfilePicture: snapshot.data ?? '',
+                          likes: post.likes,
+                          currentUserId:
+                              context.read<AuthService>().currentUser?.uid ??
+                                  '',
+                        );
+                      },
                     );
                   },
                   childCount: postsProvider.feedPosts.length,

@@ -1,10 +1,19 @@
+import 'package:auto_route/auto_route.dart';
+import 'package:ckoitgrol/config/object_detection.dart';
+import 'package:ckoitgrol/route/router.dart';
+import 'package:ckoitgrol/services/post/create_post_service.dart';
+import 'package:ckoitgrol/utils/image/image_utils.dart';
+import 'package:ckoitgrol/utils/recognition/custom_torch.dart';
+import 'package:ckoitgrol/utils/recognition/placeholder.dart';
 import 'package:flutter/material.dart';
 import 'dart:async';
 
 import 'package:flutter/services.dart';
 import 'dart:io';
 import 'package:image_picker/image_picker.dart';
-import 'package:pytorch_lite/pytorch_lite.dart';
+import 'package:provider/provider.dart';
+import 'package:pytorch_lite/pigeon.dart';
+import 'package:widgets_to_image/widgets_to_image.dart';
 
 class RunModelByImage extends StatefulWidget {
   const RunModelByImage({super.key});
@@ -16,11 +25,13 @@ class RunModelByImage extends StatefulWidget {
 class RunModelByImageState extends State<RunModelByImage> {
   late ModelObjectDetection _objectModel;
   String? textToShow;
-  List? _prediction;
   File? _image;
   final ImagePicker _picker = ImagePicker();
   bool objectDetection = false;
-  List<ResultObjectDetection?> objDetect = [];
+  List<ResultObjectDetection?> objectDetectionResults = [];
+  WidgetsToImageController controller = WidgetsToImageController();
+  Uint8List? bytes;
+
   @override
   void initState() {
     super.initState();
@@ -29,14 +40,14 @@ class RunModelByImageState extends State<RunModelByImage> {
 
   //load your model
   Future loadModel() async {
-    String pathObjectDetectionModel = "assets/models/best.torchscript";
+    String pathObjectDetectionModel = MODEL_PATH;
     try {
       _objectModel = await PytorchLite.loadObjectDetectionModel(
         pathObjectDetectionModel,
-        3,
+        LABELS_NUMBER,
         640,
         640,
-        labelPath: "assets/labels/labels.txt",
+        labelPath: LABELS_PATH,
       );
     } catch (e) {
       if (e is PlatformException) {
@@ -47,89 +58,161 @@ class RunModelByImageState extends State<RunModelByImage> {
     }
   }
 
-  Future runObjectDetection() async {
+  Future<void> runObjectDetection() async {
     //pick a random image
-
     final XFile? image = await _picker.pickImage(source: ImageSource.gallery);
-    Stopwatch stopwatch = Stopwatch()..start();
-    objDetect = await _objectModel.getImagePrediction(
-        await File(image!.path).readAsBytes(),
-        minimumScore: 0.1,
-        iOUThreshold: 0.3);
-    textToShow = inferenceTimeAsString(stopwatch);
-    print('object executed in ${stopwatch.elapsed.inMilliseconds} ms');
+    if (image == null) return;
 
-    for (var element in objDetect) {
-      print({
-        "score": element?.score,
-        "className": element?.className,
-        "class": element?.classIndex,
-        "rect": {
-          "left": element?.rect.left,
-          "top": element?.rect.top,
-          "width": element?.rect.width == null ? 0 : element!.rect.width,
-          "height": element?.rect.height == null ? 0 : element!.rect.height,
-          "right": element?.rect.right,
-          "bottom": element?.rect.bottom,
-        },
-      });
-    }
+    File imageFile = File(image.path);
+    Uint8List imageBytes = await imageFile.readAsBytes();
+
+    objectDetectionResults = await _objectModel.getImagePrediction(
+      imageBytes,
+      minimumScore: 0.6,
+      iOUThreshold: 0.5,
+    );
+
     setState(() {
-      //this.objDetect = objDetect;
+      //this.objectDetectionResults = objectDetectionResults;
       _image = File(image.path);
     });
   }
 
-  String inferenceTimeAsString(Stopwatch stopwatch) =>
-      "Inference Took ${stopwatch.elapsed.inMilliseconds} ms";
+  Future<void> validateImage() async {
+    if (objectDetectionResults.isNotEmpty && _image != null) {
+      try {
+        bytes = await controller.capture();
+        if (bytes == null) return;
+
+        // Create a temporary file and write the bytes to it
+        final tempDir = await Directory.systemTemp.create();
+        final tempFile = File('${tempDir.path}/temp_image.png');
+        await tempFile.writeAsBytes(bytes!);
+
+        double highestScore = objectDetectionResults
+            .where((result) => result != null)
+            .reduce((a, b) => a!.score > b!.score ? a : b)!
+            .score;
+
+        Size imageSize = await getImageSize(tempFile);
+
+        context.read<CreatePostService>().imageFile = tempFile;
+        context.read<CreatePostService>().grolPercentage = highestScore;
+        context.router.push(const SetPostDetailsRoute());
+      } catch (e) {
+        print("Error during image validation: $e");
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      home: Scaffold(
-        appBar: AppBar(
-          title: const Text('Run model with Image'),
-        ),
-        body: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Expanded(
-              child: objDetect.isNotEmpty
-                  ? _image == null
-                      ? const Text('No image selected.')
-                      : _objectModel.renderBoxesOnImage(_image!, objDetect)
-                  : _image == null
-                      ? const Text('No image selected.')
-                      : SizedBox(
-                          height: MediaQuery.of(context).size.height * 0.6,
-                          child: Image.file(_image!, fit: BoxFit.scaleDown),
+    return Stack(
+      children: <Widget>[
+        _image == null
+            ? placeholder(
+                context,
+                runObjectDetection,
+                'Select an image to get started !',
+                Icons.photo_library_outlined)
+            : Align(
+                alignment: Alignment.center,
+                child: LayoutBuilder(
+                  builder: (context, constraints) {
+                    return FutureBuilder<Size>(
+                      future: getImageSize(_image!),
+                      builder: (context, snapshot) {
+                        if (!snapshot.hasData) return const SizedBox();
+                        return SizedBox(
+                          width: snapshot.data!.width,
+                          height: snapshot.data!.height,
+                          child: WidgetsToImage(
+                            controller: controller,
+                            child: objectDetectionResults.isNotEmpty
+                                ? _objectModel.renderBoxesOnImage(
+                                    _image!, objectDetectionResults)
+                                : Image.file(_image!, fit: BoxFit.contain),
+                          ),
+                        );
+                      },
+                    );
+                  },
+                ),
+              ),
+        // for (var element in objectDetectionResults)
+        //   Text("class: ${element?.className} score: ${element?.score}"),
+        if (_image != null)
+          Positioned(
+            bottom: 10,
+            child: _decisionRow(),
+          ),
+      ],
+    );
+  }
+
+  Widget _decisionRow() {
+    return Container(
+      width: MediaQuery.of(context).size.width,
+      padding: const EdgeInsets.symmetric(horizontal: 20),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          GestureDetector(
+            onTap: runObjectDetection,
+            child: Container(
+              width: 50,
+              height: 50,
+              decoration: BoxDecoration(
+                color: Theme.of(context).colorScheme.primary,
+                shape: BoxShape.circle,
+              ),
+              child: Icon(Icons.photo_library,
+                  size: 25, color: Theme.of(context).colorScheme.surface),
+            ),
+          ),
+          GestureDetector(
+            onTap: objectDetectionResults.isNotEmpty
+                ? validateImage
+                : () {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text('No shoes detected, please try again !',
+                            style: TextStyle(
+                                color: Theme.of(context).colorScheme.surface)),
+                        backgroundColor: Theme.of(context).colorScheme.primary,
+                        margin: const EdgeInsets.all(20),
+                        duration: const Duration(seconds: 1),
+                        dismissDirection: DismissDirection.down,
+                        padding: const EdgeInsets.all(8),
+                        behavior: SnackBarBehavior.floating,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
+                          side: BorderSide(
+                            color: Theme.of(context).colorScheme.primary,
+                            style: BorderStyle.solid,
+                          ),
                         ),
-            ),
-            Center(
-              child: Visibility(
-                visible: textToShow != null,
-                child: Text(
-                  "$textToShow",
-                  maxLines: 3,
-                ),
+                      ),
+                    );
+                  },
+            child: Container(
+              width: 50,
+              height: 50,
+              decoration: BoxDecoration(
+                color: objectDetectionResults.isNotEmpty
+                    ? Theme.of(context).colorScheme.primary
+                    : const Color(0xff171216),
+                shape: BoxShape.circle,
               ),
+              child: Icon(
+                  objectDetectionResults.isNotEmpty ? Icons.check : Icons.close,
+                  size: 25,
+                  color: objectDetectionResults.isNotEmpty
+                      ? Theme.of(context).colorScheme.surface
+                      : Theme.of(context).colorScheme.error),
             ),
-            for (var element in objDetect)
-              Text("class: ${element?.className} score: ${element?.score}"),
-            TextButton(
-              onPressed: runObjectDetection,
-              style: TextButton.styleFrom(
-                backgroundColor: Colors.blue,
-              ),
-              child: const Text(
-                "Run object detection with labels",
-                style: TextStyle(
-                  color: Colors.white,
-                ),
-              ),
-            ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

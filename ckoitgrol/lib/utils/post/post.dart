@@ -1,28 +1,45 @@
+import 'package:ckoitgrol/provider/posts_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
+import 'package:ckoitgrol/utils/dialog/share_dialog.dart';
 
 class UserPost extends StatelessWidget {
+  final String id;
   final String title;
   final String description;
   final String image;
   final double grolPercentage;
   final String date;
   final String author;
+  final String authorProfilePicture;
+  final List<String> likes;
+  final String currentUserId;
 
   const UserPost({
     super.key,
+    required this.id,
     required this.title,
     required this.description,
     required this.image,
     required this.grolPercentage,
     required this.date,
     required this.author,
+    this.authorProfilePicture = '',
+    required this.likes,
+    required this.currentUserId,
   });
+
+  void _handleLike(BuildContext context) {
+    context.read<PostsProvider>().toggleLike(id, currentUserId);
+  }
 
   @override
   Widget build(BuildContext context) {
+    final bool isLiked = likes.contains(currentUserId);
+
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       decoration: BoxDecoration(
@@ -47,14 +64,12 @@ class UserPost extends StatelessWidget {
                 // Author avatar
                 CircleAvatar(
                   radius: 20,
-                  backgroundColor: Theme.of(context).colorScheme.primary,
-                  child: Text(
-                    author[0].toUpperCase(),
-                    style: TextStyle(
-                      color: Theme.of(context).colorScheme.onPrimary,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
+                  backgroundColor:
+                      Theme.of(context).colorScheme.surfaceContainerHigh,
+                  foregroundImage: authorProfilePicture.isNotEmpty
+                      ? NetworkImage(authorProfilePicture)
+                      : null,
+                  child: const Icon(Icons.person, size: 20),
                 ),
                 const SizedBox(width: 12),
                 // Author name and date
@@ -102,16 +117,21 @@ class UserPost extends StatelessWidget {
           // Post image
           ClipRRect(
             borderRadius: const BorderRadius.vertical(top: Radius.circular(4)),
-            child: CachedNetworkImage(
-              imageUrl: image,
-              height: 200,
-              width: double.infinity,
-              fit: BoxFit.contain,
-              placeholder: (context, url) => Container(
-                height: 200,
-                color: Theme.of(context).colorScheme.surfaceContainerHighest,
+            child: ConstrainedBox(
+              constraints: const BoxConstraints(
+                maxHeight: 400, // Maximum height allowed
+                minHeight: 300, // Minimum height to maintain
               ),
-              errorWidget: (context, url, error) => const Icon(Icons.error),
+              child: CachedNetworkImage(
+                imageUrl: image,
+                width: double.infinity,
+                fit: BoxFit.contain,
+                placeholder: (context, url) => Container(
+                  height: 300, // Default placeholder height
+                  color: Theme.of(context).colorScheme.surfaceContainerHighest,
+                ),
+                errorWidget: (context, url, error) => const Icon(Icons.error),
+              ),
             ),
           ),
           // Post content
@@ -139,12 +159,25 @@ class UserPost extends StatelessWidget {
                   children: [
                     _buildActionButton(
                       context,
-                      Icons.favorite_border_rounded,
-                      Translate.of(context).like,
+                      isLiked ? Icons.favorite : Icons.favorite_border_rounded,
+                      () => _handleLike(context),
+                      '${likes.length} ${Translate.of(context).like}',
+                      color: isLiked
+                          ? Theme.of(context).colorScheme.primary
+                          : null,
                     ),
                     _buildActionButton(
                       context,
                       Icons.share_outlined,
+                      () {
+                        showDialog(
+                          context: context,
+                          builder: (context) => ShareDialog(
+                            postId: id,
+                            currentUserId: currentUserId,
+                          ),
+                        );
+                      },
                       Translate.of(context).share,
                     ),
                   ],
@@ -158,12 +191,10 @@ class UserPost extends StatelessWidget {
   }
 
   Widget _buildActionButton(
-    BuildContext context,
-    IconData icon,
-    String label,
-  ) {
+      BuildContext context, IconData icon, VoidCallback onTap, String label,
+      {Color? color}) {
     return InkWell(
-      onTap: () {},
+      onTap: onTap,
       borderRadius: BorderRadius.circular(8),
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
@@ -172,13 +203,14 @@ class UserPost extends StatelessWidget {
             Icon(
               icon,
               size: 20,
-              color: Theme.of(context).colorScheme.onSurfaceVariant,
+              color: color ?? Theme.of(context).colorScheme.onSurfaceVariant,
             ),
             const SizedBox(width: 8),
             Text(
               label,
               style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    color: Theme.of(context).colorScheme.onSurfaceVariant,
+                    color:
+                        color ?? Theme.of(context).colorScheme.onSurfaceVariant,
                   ),
             ),
           ],

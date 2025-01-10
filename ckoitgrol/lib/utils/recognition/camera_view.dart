@@ -2,24 +2,25 @@ import 'dart:developer';
 import 'dart:io';
 
 import 'package:camera/camera.dart';
+import 'package:ckoitgrol/config/object_detection.dart';
+import 'package:ckoitgrol/utils/recognition/custom_torch.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:pytorch_lite/pytorch_lite.dart';
+import 'package:pytorch_lite/pigeon.dart';
 
 import 'camera_view_singleton.dart';
 
-/// [CameraView] sends each frame for inference
 class CameraView extends StatefulWidget {
-  /// Callback to pass results after inference to [HomeView]
   final Function(
-          List<ResultObjectDetection> recognitions, Duration inferenceTime)
-      resultsCallback;
-  final Function(String classification, Duration inferenceTime)
-      resultsCallbackClassification;
+    List<ResultObjectDetection> recognitions,
+    Duration inferenceTime,
+  ) resultsCallback;
+
+  final bool isCameraRotated;
 
   /// Constructor
-  const CameraView(this.resultsCallback, this.resultsCallbackClassification,
-      {super.key});
+  const CameraView(this.resultsCallback,
+      {super.key, this.isCameraRotated = false});
   @override
   State<CameraView> createState() => _CameraViewState();
 }
@@ -30,9 +31,6 @@ class _CameraViewState extends State<CameraView> with WidgetsBindingObserver {
 
   /// Controller
   CameraController? cameraController;
-
-  /// true when inference is ongoing
-  bool predicting = false;
 
   /// true when inference is ongoing
   bool predictingObjectDetection = false;
@@ -47,16 +45,35 @@ class _CameraViewState extends State<CameraView> with WidgetsBindingObserver {
     initStateAsync();
   }
 
+  @override
+  void didUpdateWidget(CameraView oldWidget) {
+    super.didUpdateWidget(oldWidget);
+
+    // Check if the rotation state has changed
+    if (oldWidget.isCameraRotated != widget.isCameraRotated) {
+      // Reinitialize the camera with the new rotation state
+      reinitializeCamera();
+    }
+  }
+
+  /// Reinitializes the camera
+  void reinitializeCamera() async {
+    // Stop the current camera controller if it's running
+
+    // Initialize the camera with the updated rotation state
+    initializeCamera();
+  }
+
   //load your model
   Future loadModel() async {
-    String pathObjectDetectionModel = "assets/models/best.torchscript";
+    String pathObjectDetectionModel = MODEL_PATH;
     try {
       _objectModel = await PytorchLite.loadObjectDetectionModel(
         pathObjectDetectionModel,
-        3,
+        LABELS_NUMBER,
         640,
         640,
-        labelPath: "assets/labels/labels.txt",
+        labelPath: LABELS_PATH,
       );
     } catch (e) {
       if (e is PlatformException) {
@@ -104,18 +121,15 @@ class _CameraViewState extends State<CameraView> with WidgetsBindingObserver {
       }
       setState(() {});
     }
-    // Initially predicting = false
-    setState(() {
-      predicting = false;
-    });
   }
 
   /// Initializes the camera by setting [cameraController]
   void initializeCamera() async {
     cameras = await availableCameras();
 
-    var idx =
-        cameras.indexWhere((c) => c.lensDirection == CameraLensDirection.back);
+    var idx = cameras.indexWhere((c) => widget.isCameraRotated
+        ? c.lensDirection == CameraLensDirection.front
+        : c.lensDirection == CameraLensDirection.back);
     if (idx < 0) {
       log("No Back camera found - weird");
       return;
@@ -124,7 +138,7 @@ class _CameraViewState extends State<CameraView> with WidgetsBindingObserver {
     var desc = cameras[idx];
     _camFrameRotation = Platform.isAndroid ? desc.sensorOrientation : 0;
     // cameras[0] for rear-camera
-    cameraController = CameraController(desc, ResolutionPreset.low,
+    cameraController = CameraController(desc, ResolutionPreset.medium,
         imageFormatGroup: Platform.isAndroid
             ? ImageFormatGroup.yuv420
             : ImageFormatGroup.bgra8888,
@@ -184,8 +198,8 @@ class _CameraViewState extends State<CameraView> with WidgetsBindingObserver {
           await _objectModel!.getCameraImagePrediction(
         cameraImage,
         rotation: _camFrameRotation,
-        minimumScore: 0.3,
-        iOUThreshold: 0.3,
+        minimumScore: 0.6,
+        iOUThreshold: 0.5,
       );
 
       // Stop the stopwatch

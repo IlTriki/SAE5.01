@@ -15,11 +15,6 @@ class MainLayoutPage extends StatefulWidget {
 
 class _MainLayoutPageState extends State<MainLayoutPage> {
   @override
-  void initState() {
-    super.initState();
-  }
-
-  @override
   Widget build(BuildContext context) {
     return AutoTabsRouter.pageView(
       routes: const [
@@ -28,6 +23,7 @@ class _MainLayoutPageState extends State<MainLayoutPage> {
         FriendsRouter(),
         ProfileRouter(),
       ],
+      physics: const NeverScrollableScrollPhysics(),
       builder: (context, child, _) {
         final tabsRouter = AutoTabsRouter.of(context);
         return ColorfulSafeArea(

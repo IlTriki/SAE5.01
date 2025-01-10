@@ -108,4 +108,10 @@ class UserDataProvider extends ChangeNotifier {
   Future<List<UserEntity>?> fetchAllUsers() async {
     return await _firestoreService.getAllUsers();
   }
+
+  Future<UserEntity?> getUserById(String userId) async {
+    final snapshot = await _firestoreService.getUserById(userId);
+    if (snapshot == null) return null;
+    return UserEntity.fromJson(snapshot);
+  }
 }

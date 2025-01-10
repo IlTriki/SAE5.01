@@ -1,6 +1,7 @@
 import 'package:adaptive_theme/adaptive_theme.dart';
 import 'package:ckoitgrol/firebase_options.dart';
 import 'package:ckoitgrol/config/theme.dart';
+import 'package:ckoitgrol/services/post/create_post_service.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:ckoitgrol/services/firebase/fireauth_service.dart';
 import 'package:ckoitgrol/services/firebase/firestore_service.dart';
@@ -52,6 +53,9 @@ void main() async {
         ),
         ChangeNotifierProvider(
           create: (context) => PostsProvider(FirebasePostService()),
+        ),
+        ChangeNotifierProvider(
+          create: (context) => CreatePostService(),
         ),
       ],
       child: MainApp(themeMode: savedThemeMode),

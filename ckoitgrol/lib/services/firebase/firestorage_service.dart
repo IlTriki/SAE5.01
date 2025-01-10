@@ -15,4 +15,9 @@ class StorageService {
       rethrow;
     }
   }
+
+  void resetService() {
+    // disconnect from firebase
+    _storage.app.delete();
+  }
 }

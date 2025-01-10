@@ -56,6 +56,13 @@ class FirestoreService {
         .collection('following')
         .doc(followerUid)
         .set({});
+
+    await _db
+        .collection('users')
+        .doc(followerUid)
+        .collection('followers')
+        .doc(uid)
+        .set({});
   }
 
   Future<void> unfollowUser(String uid, String followerUid) async {
@@ -64,6 +71,13 @@ class FirestoreService {
         .doc(uid)
         .collection('following')
         .doc(followerUid)
+        .delete();
+
+    await _db
+        .collection('users')
+        .doc(followerUid)
+        .collection('followers')
+        .doc(uid)
         .delete();
   }
 
@@ -155,5 +169,10 @@ class FirestoreService {
 
     // Update the user document with all fields including counts
     await _db.collection('users').doc(userData.uid).update(data);
+  }
+
+  Future<Map<String, dynamic>?> getUserById(String uid) async {
+    final doc = await _db.collection('users').doc(uid).get();
+    return doc.data();
   }
 }

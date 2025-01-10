@@ -42,11 +42,6 @@ class BoxWidget extends StatelessWidget {
       top: result.rect.top * factorY,
       width: result.rect.width * factorX - 20,
       height: result.rect.height * factorY - 20,
-
-      //left: re?.rect.left.toDouble(),
-      //top: re?.rect.top.toDouble(),
-      //right: re.rect.right.toDouble(),
-      //bottom: re.rect.bottom.toDouble(),
       child: Container(
         width: result.rect.width * factorX,
         height: result.rect.height * factorY,

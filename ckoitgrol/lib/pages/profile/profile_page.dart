@@ -44,47 +44,67 @@ class _ProfilePageState extends State<ProfilePage> {
       });
 
       if (fromProfile) {
-        // Upload image to Firebase Storage
-        final storageRef = FirebaseStorage.instance
-            .ref()
-            .child('user_images')
-            .child(user?.uid ?? '')
-            .child('profile_picture.jpg');
-
-        try {
-          // Upload the file
-          await storageRef.putFile(_selectedImage!);
-
-          // Get the download URL
-          final downloadUrl = await storageRef.getDownloadURL();
-
-          // Update user data with the Firebase Storage URL
-          final userData =
-              Provider.of<UserDataProvider>(context, listen: false).userData;
-          context.read<UserDataProvider>().updateUserData(UserEntity(
-                uid: user?.uid ?? '',
-                photoURL: downloadUrl, // Use the Firebase Storage URL
-                username: userData?.username,
-                bio: userData?.bio,
-                location: userData?.location,
-                followers: userData?.followers,
-                following: userData?.following,
-                posts: userData?.posts,
-              ));
-        } catch (e) {
-          // Handle any errors
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Error uploading image: $e')),
-          );
-        }
+        saveImageToFirebase(_selectedImage!);
       }
+    }
+  }
+
+  saveImageToFirebase(File image) async {
+    // Upload image to Firebase Storage
+    final storageRef = FirebaseStorage.instance
+        .ref()
+        .child('user_images')
+        .child(user?.uid ?? '')
+        .child('profile_picture.jpg');
+
+    try {
+      // Upload the file
+      await storageRef.putFile(_selectedImage!);
+
+      // Get the download URL
+      final downloadUrl = await storageRef.getDownloadURL();
+
+      // Update user data with the Firebase Storage URL
+      final userData =
+          Provider.of<UserDataProvider>(context, listen: false).userData;
+      context.read<UserDataProvider>().updateUserData(UserEntity(
+            uid: user?.uid ?? '',
+            photoURL: downloadUrl, // Use the Firebase Storage URL
+            username: userData?.username,
+            bio: userData?.bio,
+            location: userData?.location,
+            followers: userData?.followers,
+            following: userData?.following,
+            posts: userData?.posts,
+          ));
+    } catch (e) {
+      // Handle any errors
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Error uploading image: $e',
+              style: TextStyle(color: Theme.of(context).colorScheme.surface)),
+          backgroundColor: Theme.of(context).colorScheme.primary,
+          margin: const EdgeInsets.all(20),
+          duration: const Duration(seconds: 1),
+          dismissDirection: DismissDirection.down,
+          padding: const EdgeInsets.all(8),
+          behavior: SnackBarBehavior.floating,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10),
+            side: BorderSide(
+              color: Theme.of(context).colorScheme.primary,
+              style: BorderStyle.solid,
+            ),
+          ),
+        ),
+      );
     }
   }
 
   Future<void> _loadPosts() async {
     final userId = context.read<AuthService>().currentUser?.uid;
     if (userId != null) {
-      await context.read<PostsProvider>().loadFeedPosts(userId);
+      await context.read<PostsProvider>().loadUserPosts(userId);
       // Force a rebuild after posts are loaded
       if (mounted) {
         setState(() {});
@@ -257,126 +277,141 @@ class _ProfilePageState extends State<ProfilePage> {
         borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
       ),
       builder: (BuildContext context) {
-        return Padding(
-          padding: EdgeInsets.only(
-            bottom: MediaQuery.of(context).viewInsets.bottom,
-            left: 16,
-            right: 16,
-            top: 16,
-          ),
-          child: Form(
-            key: _formKey,
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text(
-                  Translate.of(context).editProfileButton,
-                  style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                        fontWeight: FontWeight.bold,
-                        color: Theme.of(context).colorScheme.primary,
+        return StatefulBuilder(
+          builder: (BuildContext context, StateSetter setState) {
+            return Padding(
+              padding: EdgeInsets.only(
+                bottom: MediaQuery.of(context).viewInsets.bottom,
+                left: 16,
+                right: 16,
+                top: 16,
+              ),
+              child: Form(
+                key: _formKey,
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                      Translate.of(context).editProfileButton,
+                      style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                            fontWeight: FontWeight.bold,
+                            color: Theme.of(context).colorScheme.primary,
+                          ),
+                    ),
+                    const SizedBox(height: 20),
+                    GestureDetector(
+                      onTap: () async {
+                        await openImagePicker();
+                        setState(() {});
+                      },
+                      child: Stack(
+                        children: [
+                          CircleAvatar(
+                            radius: 50,
+                            backgroundColor: Theme.of(context)
+                                .colorScheme
+                                .surfaceContainerHigh,
+                            foregroundImage: _selectedImage != null
+                                ? FileImage(_selectedImage!)
+                                : (userData?.photoURL != null
+                                    ? NetworkImage(userData?.photoURL ?? '')
+                                    : null),
+                            child: const Icon(Icons.person, size: 50),
+                          ),
+                          const Positioned(
+                            bottom: 0,
+                            right: 0,
+                            child: Icon(Icons.camera_alt, size: 20),
+                          ),
+                        ],
                       ),
-                ),
-                const SizedBox(height: 20),
-                GestureDetector(
-                  onTap: openImagePicker,
-                  child: Stack(
-                    children: [
-                      CircleAvatar(
-                        radius: 50,
-                        backgroundColor:
-                            Theme.of(context).colorScheme.surfaceContainerHigh,
-                        foregroundImage: _selectedImage != null
-                            ? FileImage(_selectedImage!)
-                            : (userData?.photoURL != null
-                                ? NetworkImage(userData?.photoURL ?? '')
-                                : null),
-                        child: const Icon(Icons.person, size: 50),
+                    ),
+                    const SizedBox(height: 10),
+                    TextFormField(
+                      initialValue: _username,
+                      decoration: InputDecoration(
+                        labelText: Translate.of(context).usernameHint,
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
                       ),
-                      const Positioned(
-                        bottom: 0,
-                        right: 0,
-                        child: Icon(Icons.camera_alt, size: 20),
+                      onSaved: (value) => _username = value,
+                    ),
+                    const SizedBox(height: 10),
+                    Container(
+                      padding: const EdgeInsets.all(10),
+                      decoration: BoxDecoration(
+                        border: Border.all(
+                          color: Theme.of(context).colorScheme.primary,
+                        ),
+                        borderRadius: BorderRadius.circular(10),
                       ),
-                    ],
-                  ),
-                ),
-                const SizedBox(height: 10),
-                TextFormField(
-                  initialValue: _username,
-                  decoration: InputDecoration(
-                    labelText: Translate.of(context).usernameHint,
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10),
+                      child: TextField(
+                        controller: TextEditingController(text: _bio),
+                        maxLength: 100,
+                        decoration: InputDecoration(
+                          labelText: Translate.of(context).bioHint,
+                          border: InputBorder.none,
+                          counterText: '',
+                        ),
+                        maxLines: 3,
+                        onChanged: (value) => _bio = value,
+                        onEditingComplete: () => _formKey.currentState?.save(),
+                        onTapOutside: (event) => _formKey.currentState?.save(),
+                        maxLengthEnforcement: MaxLengthEnforcement.enforced,
+                      ),
                     ),
-                  ),
-                  onSaved: (value) => _username = value,
-                ),
-                const SizedBox(height: 10),
-                Container(
-                  padding: const EdgeInsets.all(10),
-                  decoration: BoxDecoration(
-                    border: Border.all(
-                      color: Theme.of(context).colorScheme.primary,
+                    const SizedBox(height: 10),
+                    TextFormField(
+                      initialValue: _location,
+                      decoration: InputDecoration(
+                        labelText: Translate.of(context).locationHint,
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                      ),
+                      onSaved: (value) => _location = value,
                     ),
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  child: TextField(
-                    controller: TextEditingController(text: _bio),
-                    maxLength: 100,
-                    decoration: InputDecoration(
-                      labelText: Translate.of(context).bioHint,
-                      border: InputBorder.none,
-                      counterText: '',
+                    const SizedBox(height: 20),
+                    CustomButton(
+                      text: Translate.of(context).saveChangesButton,
+                      onPressed: () {
+                        if (_formKey.currentState?.validate() ?? false) {
+                          _formKey.currentState?.save();
+                          if (_selectedImage != null) {
+                            saveImageToFirebase(_selectedImage!);
+                          }
+                          // Update user data
+                          Provider.of<UserDataProvider>(context, listen: false)
+                              .updateUserData(UserEntity(
+                            uid: userData?.uid ?? '',
+                            username: _username,
+                            bio: _bio,
+                            location: _location == null || _location!.isEmpty
+                                ? Translate.of(context).noLocationYet
+                                : _location,
+                            photoURL: userData?.photoURL,
+                          ));
+                          setState(() {
+                            _selectedImage = null;
+                          });
+                          Navigator.pop(context);
+                        }
+                      },
                     ),
-                    maxLines: 3,
-                    onChanged: (value) => _bio = value,
-                    onEditingComplete: () => _formKey.currentState?.save(),
-                    onTapOutside: (event) => _formKey.currentState?.save(),
-                    maxLengthEnforcement: MaxLengthEnforcement.enforced,
-                  ),
+                    const SizedBox(height: 20),
+                  ],
                 ),
-                const SizedBox(height: 10),
-                TextFormField(
-                  initialValue: _location,
-                  decoration: InputDecoration(
-                    labelText: Translate.of(context).locationHint,
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                  ),
-                  onSaved: (value) => _location = value,
-                ),
-                const SizedBox(height: 20),
-                CustomButton(
-                  text: Translate.of(context).saveChangesButton,
-                  onPressed: () {
-                    if (_formKey.currentState?.validate() ?? false) {
-                      _formKey.currentState?.save();
-                      if (_selectedImage != null) {
-                        openImagePicker(fromProfile: true);
-                      }
-                      // Update user data
-                      Provider.of<UserDataProvider>(context, listen: false)
-                          .updateUserData(UserEntity(
-                        uid: userData?.uid ?? '',
-                        username: _username,
-                        bio: _bio,
-                        location: _location == null || _location!.isEmpty
-                            ? Translate.of(context).noLocationYet
-                            : _location,
-                        photoURL: userData?.photoURL,
-                      ));
-                      Navigator.pop(context);
-                    }
-                  },
-                ),
-                const SizedBox(height: 20),
-              ],
-            ),
-          ),
+              ),
+            );
+          },
         );
       },
-    );
+    ).then((_) {
+      setState(() {
+        _selectedImage = null;
+      });
+    });
   }
 
   Future<void> _handleRefresh() async {
@@ -431,10 +466,10 @@ class _ProfilePageState extends State<ProfilePage> {
                     radius: 50,
                     backgroundColor:
                         Theme.of(context).colorScheme.surfaceContainerHigh,
-                    foregroundImage: _selectedImage != null
-                        ? FileImage(_selectedImage!)
-                        : (userData.photoURL != null
-                            ? NetworkImage(userData.photoURL ?? '')
+                    foregroundImage: (userData.photoURL != null
+                        ? NetworkImage(userData.photoURL ?? '')
+                        : _selectedImage != null
+                            ? FileImage(_selectedImage!)
                             : null),
                     child: const Icon(Icons.person, size: 50),
                   ),
@@ -475,10 +510,7 @@ class _ProfilePageState extends State<ProfilePage> {
             Divider(
               color: Theme.of(context).colorScheme.surfaceContainerHigh,
             ),
-            ConstrainedBox(
-              constraints: const BoxConstraints(maxHeight: 400),
-              child: userPosts(context),
-            ),
+            userPosts(context, userData),
             const SizedBox(height: 30),
           ],
         ),
@@ -558,10 +590,10 @@ class _ProfilePageState extends State<ProfilePage> {
     );
   }
 
-  Widget userPosts(BuildContext context) {
+  Widget userPosts(BuildContext context, UserEntity? userData) {
     final postsProvider = context.watch<PostsProvider>();
 
-    if (postsProvider.isLoadingFeedPosts) {
+    if (postsProvider.isLoadingUserPosts) {
       return ListView.builder(
         shrinkWrap: true,
         physics: const NeverScrollableScrollPhysics(),
@@ -598,7 +630,7 @@ class _ProfilePageState extends State<ProfilePage> {
       );
     }
 
-    if (postsProvider.feedPosts.isEmpty) {
+    if (postsProvider.userPosts.isEmpty) {
       return Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -621,11 +653,15 @@ class _ProfilePageState extends State<ProfilePage> {
     return ListView.builder(
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
-      itemCount: postsProvider.feedPosts.length,
+      itemCount: postsProvider.userPosts.length,
       itemBuilder: (context, index) {
-        final post = postsProvider.feedPosts[index];
+        final post = postsProvider.userPosts[index];
         return UserPost(
-          title: post.text,
+          id: post.id,
+          likes: post.likes,
+          currentUserId: context.read<AuthService>().currentUser?.uid ?? '',
+          authorProfilePicture: userData?.photoURL ?? '',
+          title: post.title,
           description: post.text,
           image: post.imageUrl,
           grolPercentage: post.grolPercentage,
