@@ -6,6 +6,7 @@ import 'package:provider/provider.dart';
 import 'package:ckoitgrol/entities/user_entity.dart';
 import 'package:ckoitgrol/utils/post/post.dart';
 import 'package:ckoitgrol/provider/posts_provider.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 @RoutePage()
 class ChatPage extends StatelessWidget {
@@ -49,7 +50,7 @@ class ChatPage extends StatelessWidget {
           if (!snapshot.hasData || snapshot.data!.isEmpty) {
             return Center(
               child: Text(
-                'No shared posts yet',
+                Translate.of(context).noSharedPost,
                 style: Theme.of(context).textTheme.bodyLarge,
               ),
             );

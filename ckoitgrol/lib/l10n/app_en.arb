@@ -47,5 +47,8 @@
     "noBioYet": "No bio yet...",
     "like": "Like",
     "share": "Share",
-    "yourFeed": "Your feed"
+    "yourFeed": "Your feed",
+    "noSharedPost": "No shared posts yet",
+    "create": "Let's create a grolesque post!",
+    "uploadImage": "First, choose how you would like to upload your image"
 }

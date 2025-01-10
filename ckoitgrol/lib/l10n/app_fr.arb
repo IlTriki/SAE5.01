@@ -47,5 +47,8 @@
     "noBioYet": "Aucune bio pour le moment...",
     "like": "Liker",
     "share": "Partager",
-    "yourFeed": "Votre feed"
+    "yourFeed": "Votre feed",
+    "noSharedPost": "Pas de posts partagés pour le moment",
+    "create": "Créons un post grolesque!",
+    "uploadImage": "D'abord, choisissez comment voulez vous importer votre photo"
 }

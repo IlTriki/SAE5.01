@@ -8,6 +8,7 @@ import 'package:ckoitgrol/provider/user_data_provider.dart';
 import 'package:ckoitgrol/utils/chat/chat_list_item.dart';
 import 'package:ckoitgrol/route/router.dart';
 import 'package:ckoitgrol/services/firebase/fireauth_service.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 @RoutePage()
 class FriendsChatPage extends StatelessWidget {
@@ -46,7 +47,7 @@ class FriendsChatPage extends StatelessWidget {
                       ),
                       const SizedBox(height: 16),
                       Text(
-                        'No shared posts yet',
+                        Translate.of(context).noSharedPost,
                         style: Theme.of(context).textTheme.titleMedium,
                       ),
                     ],
